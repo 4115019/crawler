@@ -2,18 +2,17 @@ package ca.credits.business.p2b.wangdai;
 
 import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.business.p2b.P2bTemplate;
+import ca.credits.common.config.Config;
 import ca.credits.deep.Bootstrap;
+import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.ExchangeEnum;
 import ca.credits.queue.QueueInfo;
 import ca.credits.queue.SendRefuseException;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpHost;
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.RegexSelector;
 
@@ -59,12 +58,19 @@ public class WangDaiPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) throws SendRefuseException {
+        EventControlConfig config = new EventControlConfig(Config.getString("rabbitmq.host"));
+        config.setUsername(Config.getString("rabbitmq.username"));
+        config.setPassword(Config.getString("rabbitmq.password"));
+        config.setVirtualHost(Config.getString("rabbitmq.virtual.host"));
+
+        QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
 //        QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
 
 
 
 //        Bootstrap.startTest(queueInfo,new PPDaiPageProcessor()).getEventTemplate().send(queueInfo,new Request("http://www.5dai5.com/forum-44-1.html"));
 
+        Bootstrap.startTest(queueInfo,new WangDaiPageProcessor(), RateLimiter.create(10)).start();
 //        Bootstrap.startTest(queueInfo,new WangDaiPageProcessor(), RateLimiter.create(10)).start();
     }
 }

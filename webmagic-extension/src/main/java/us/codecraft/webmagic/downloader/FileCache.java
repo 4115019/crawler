@@ -15,6 +15,7 @@ import us.codecraft.webmagic.utils.FilePersistentBase;
 import us.codecraft.webmagic.utils.UrlUtils;
 
 import java.io.*;
+import java.text.ParseException;
 
 /**
  * Download file and saved to file for cache.<br>
@@ -118,7 +119,7 @@ public class FileCache extends FilePersistentBase implements Downloader, Pipelin
     }
 
     @Override
-    public void process(Page page) {
+    public void process(Page page) throws ParseException {
           pageProcessor.process(page);
     }
 

@@ -1,6 +1,6 @@
 package ca.credits.deep;
 
-import ca.credits.deep.scheduler.RabbimqScheduler;
+import ca.credits.deep.scheduler.RabbimqDuplicateScheduler;
 import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.EventController;
 import ca.credits.queue.QueueInfo;
@@ -19,7 +19,7 @@ public class Bootstrap {
         EventController eventController = DefaultEventController.getInstance(config);
 
         RabbitSpider rabbitSpider = RabbitSpider.create(queueInfo, pageProcessor,
-                new RabbimqScheduler(eventController).setDuplicateRemover(new HashSetDuplicateRemover())).rateLimiter(rateLimiter);
+                new RabbimqDuplicateScheduler(eventController).setDuplicateRemover(new HashSetDuplicateRemover())).rateLimiter(rateLimiter);
 
         eventController.add(queueInfo,rabbitSpider);
 
