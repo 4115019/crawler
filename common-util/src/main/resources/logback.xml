@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- configuration file for LogBack (slf4J implementation)
+See here for more details: http://gordondickens.com/wordpress/2013/03/27/sawing-through-the-java-loggers/ -->
+<configuration debug="true">
+    <!-- To enable JMX Management -->
+    <jmxConfigurator/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+      <layout class="ch.qos.logback.classic.PatternLayout">     	
+	      <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+	    </layout>
+    </appender>
+    
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <file>./logs/crawler.log</file>
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	    	<!-- daily rollover -->
+	    	<fileNamePattern>./logs/crawler.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+	    	<!-- keep 30 days' worth of history -->
+	    	<maxHistory>30</maxHistory>
+	    </rollingPolicy>
+
+	    <encoder>
+	    	<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+    <root level="info">
+    	<appender-ref ref="console"/>
+    	<appender-ref ref="file" />
+    </root>
+</configuration>

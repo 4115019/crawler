@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ca</groupId>
+    <artifactId>credits</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>engine</module>
+        <module>event</module>
+        <module>task</module>
+        <module>activity</module>
+        <module>configuration</module>
+        <module>common-util</module>
+        <module>base</module>
+        <module>queue</module>
+        <module>deep</module>
+        <module>webmagic-core</module>
+        <module>webmagic-extension</module>
+        <module>business</module>
+    </modules>
+
+    <packaging>pom</packaging>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <url>http://repo.spring.io/snapshot</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
