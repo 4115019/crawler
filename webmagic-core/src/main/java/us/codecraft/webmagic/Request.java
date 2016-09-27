@@ -21,6 +21,7 @@ public class Request extends Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final String CYCLE_TRIED_TIMES = "_cycle_tried_times";
+    public static final String RETRY_TIMES = "retry_times";
     public static final String STATUS_CODE = "statusCode";
     public static final String PROXY = "proxy";
 

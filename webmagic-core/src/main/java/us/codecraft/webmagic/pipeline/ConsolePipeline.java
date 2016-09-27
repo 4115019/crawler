@@ -1,7 +1,10 @@
 package us.codecraft.webmagic.pipeline;
 
+import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
+import us.codecraft.webmagic.Template;
 
 import java.util.Map;
 
@@ -12,13 +15,17 @@ import java.util.Map;
  * @author code4crafter@gmail.com <br>
  * @since 0.1.0
  */
+@Slf4j
 public class ConsolePipeline implements Pipeline {
 
     @Override
     public void process(ResultItems resultItems, Task task) {
-        System.out.println("get page: " + resultItems.getRequest().getUrl());
+        log.info("get page: " + resultItems.getRequest().getUrl());
         for (Map.Entry<String, Object> entry : resultItems.getAll().entrySet()) {
-            System.out.println(entry.getKey() + ":\t" + entry.getValue());
+            log.info(entry.getKey() + ":\t" + entry.getValue());
+        }
+        for(Template template : resultItems.getTemplates()){
+            log.info(new Gson().toJson(template));
         }
     }
 }

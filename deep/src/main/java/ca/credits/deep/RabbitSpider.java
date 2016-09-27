@@ -135,8 +135,8 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
         stopWatch.start();
         log.info("start request url = {}",request.getUrl());
         boolean isSuccess = false;
-        long retryTimes = request.getExtras().getLong(Request.CYCLE_TRIED_TIMES,0L);
-        Site site = getSite();
+        long retryTimes = request.getExtras().getLong(Request.RETRY_TIMES,0L);
+        Site site = null;
         try {
             /**
              * step 1: if rate limiter not null , rate limiter acquire
@@ -152,6 +152,10 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
 
             if (siteGen != null){
                 site = siteGen.gen(request);
+            }
+
+            if (site == null){
+                site = getSite();
             }
 
             /**
@@ -178,7 +182,7 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
             if (!isSuccess){
                 try {
                     if (retryTimes < site.getRetryTimes()) {
-                        request.putExtra(Request.CYCLE_TRIED_TIMES,retryTimes+1);
+                        request.putExtra(Request.RETRY_TIMES,retryTimes+1);
                         push(request);
                     } else {
                         onError(request,site);
