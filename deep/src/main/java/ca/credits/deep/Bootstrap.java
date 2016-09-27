@@ -1,7 +1,6 @@
 package ca.credits.deep;
 
 import ca.credits.deep.scheduler.RabbimqDuplicateScheduler;
-import ca.credits.deep.scheduler.RabbimqScheduler;
 import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.EventController;
 import ca.credits.queue.QueueInfo;

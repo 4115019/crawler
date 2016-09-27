@@ -11,11 +11,8 @@ import ca.credits.queue.SendRefuseException;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpHost;
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.RegexSelector;
 
@@ -67,11 +64,13 @@ public class WangDaiPageProcessor implements PageProcessor {
         config.setVirtualHost(Config.getString("rabbitmq.virtual.host"));
 
         QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
+//        QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
 
 
 
 //        Bootstrap.startTest(queueInfo,new PPDaiPageProcessor()).getEventTemplate().send(queueInfo,new Request("http://www.5dai5.com/forum-44-1.html"));
 
         Bootstrap.startTest(queueInfo,new WangDaiPageProcessor(), RateLimiter.create(10)).start();
+//        Bootstrap.startTest(queueInfo,new WangDaiPageProcessor(), RateLimiter.create(10)).start();
     }
 }

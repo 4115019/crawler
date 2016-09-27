@@ -69,8 +69,8 @@ public enum PlatformCodeEnum {
         XIAOHAO51("51小号","X00002"),
         EMA("E码平台","J00001"),
         SHENHUA("神话","J00002"),
-        YMA("Y码平台","J00003"),
-        ;
+        YMA("Y码平台","J00003");
+
         private final String name;
 
         private final String code;

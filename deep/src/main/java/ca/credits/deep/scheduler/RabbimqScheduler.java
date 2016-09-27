@@ -5,8 +5,6 @@ import ca.credits.queue.SendRefuseException;
 import org.apache.http.annotation.ThreadSafe;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Task;
-import us.codecraft.webmagic.scheduler.DuplicateRemovedScheduler;
-import us.codecraft.webmagic.scheduler.MonitorableScheduler;
 import us.codecraft.webmagic.scheduler.PushFailedException;
 import us.codecraft.webmagic.scheduler.Scheduler;
 

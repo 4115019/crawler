@@ -5,7 +5,6 @@ import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.common.config.Config;
 import ca.credits.common.util.Md5Util;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import lombok.Data;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -13,7 +12,6 @@ import java.util.Date;
 /**
  * Created by chenwen on 16/9/21.
  */
-@Data
 @DynamoDBTable(tableName="blacklist")
 public class P2bTemplate extends AbstractTemplate {
     public static String TABLE_NAME = Config.getString("aws.dynamodb.p2b.table.name");
@@ -118,7 +116,6 @@ public class P2bTemplate extends AbstractTemplate {
         this.platCode = nameCode.getCode();
         this.crawlTime = new Date();
     }
-
     public String getName() {
         return name;
     }
@@ -231,12 +228,10 @@ public class P2bTemplate extends AbstractTemplate {
         this.jrjtDelDt = jrjtDelDt;
     }
 
-//    @Override
     public void setPrimaryKey(String primaryKey) {
         this.primaryKey = primaryKey;
     }
 
-//    @Override
     public String getPrimaryKey() {
         return this.primaryKey = this.primaryKey == null ? Md5Util.toMd5(this.name + this.custId +this.platCode) : this.primaryKey;
     }

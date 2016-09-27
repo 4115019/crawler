@@ -2,7 +2,6 @@ package ca.credits.business;
 
 import ca.credits.business.enums.PlatformCodeEnum;
 import lombok.Getter;
-import lombok.Setter;
 import us.codecraft.webmagic.Template;
 
 /**

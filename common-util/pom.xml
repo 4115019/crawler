@@ -24,12 +24,16 @@
         <guava.version>19.0</guava.version>
         <gson.version>2.7</gson.version>
         <commons-io.version>2.5</commons-io.version>
+<<<<<<< HEAD
         <aws.java.sdk.version>1.11.36</aws.java.sdk.version>
+=======
+>>>>>>> ae7ddbeb2563c346ff1a64c0aeda865814af5e7b
         <configuration.version>1.10</configuration.version>
         <fastjson.version>1.2.17</fastjson.version>
     </properties>
 
     <dependencies>
+<<<<<<< HEAD
         <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -37,6 +41,8 @@
             <version>${aws.java.sdk.version}</version>
         </dependency>
 
+=======
+>>>>>>> ae7ddbeb2563c346ff1a64c0aeda865814af5e7b
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>

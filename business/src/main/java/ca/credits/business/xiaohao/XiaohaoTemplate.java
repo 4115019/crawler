@@ -5,7 +5,6 @@ import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.common.config.Config;
 import ca.credits.common.util.Md5Util;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import lombok.Data;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -56,12 +55,10 @@ public class XiaohaoTemplate extends AbstractTemplate{
         this.platCode = nameCode.getCode();
     }
 
-//    @Override
     public void setPrimaryKey(String primaryKey) {
         this.primaryKey = primaryKey;
     }
 
-//    @Override
     public String getPrimaryKey() {
         return this.primaryKey = this.primaryKey == null ? Md5Util.toMd5(this.phone + this.platCode) : this.primaryKey;
     }

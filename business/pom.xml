@@ -29,6 +29,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+<<<<<<< HEAD
             <plugin>
                 <configuration>
                     <finalName>deep-crawler</finalName>
@@ -67,6 +68,8 @@
                     </execution>
                 </executions>
             </plugin>
+=======
+>>>>>>> ae7ddbeb2563c346ff1a64c0aeda865814af5e7b
         </plugins>
     </build>
 
