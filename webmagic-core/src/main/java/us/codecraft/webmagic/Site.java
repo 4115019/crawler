@@ -1,5 +1,6 @@
 package us.codecraft.webmagic;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import us.codecraft.webmagic.proxy.HttpProxy;
 import com.google.common.collect.HashBasedTable;
@@ -7,6 +8,7 @@ import com.google.common.collect.Table;
 import lombok.Getter;
 import org.apache.http.HttpHost;
 import us.codecraft.webmagic.proxy.ProxyPool;
+import us.codecraft.webmagic.utils.HttpProxyUtil;
 import us.codecraft.webmagic.utils.UrlUtils;
 
 import java.io.Serializable;
@@ -65,6 +67,15 @@ public class Site implements Serializable{
 
     private boolean useGzip = true;
 
+    @Getter
+    private  NameValuePair[] nameValuePair;
+
+    @Getter
+    private String contentType;
+
+    @Getter
+    private String body;
+
     /**
      * @see us.codecraft.webmagic.utils.HttpConstant.Header
      * @deprecated
@@ -93,8 +104,27 @@ public class Site implements Serializable{
         return this;
     }
 
+    public Site useRandomProxy(boolean useRandomProxy){
+        return this;
+    }
+
     public Site cookieStore(CookieStore cookieStore){
         this.cookieStore = cookieStore;
+        return this;
+    }
+
+    public Site nameValuePair(NameValuePair[] nameValuePair){
+        this.nameValuePair = nameValuePair;
+        return this;
+    }
+
+    public Site contentType(String contentType){
+        this.contentType = contentType;
+        return this;
+    }
+
+    public Site body(String body){
+        this.body = body;
         return this;
     }
 

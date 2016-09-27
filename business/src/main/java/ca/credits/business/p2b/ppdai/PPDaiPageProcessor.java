@@ -3,7 +3,6 @@ package ca.credits.business.p2b.ppdai;
 import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.business.p2b.P2bTemplate;
 import ca.credits.common.config.Config;
-import ca.credits.deep.Bootstrap;
 import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.ExchangeEnum;
 import ca.credits.queue.QueueInfo;
@@ -58,7 +57,7 @@ public class PPDaiPageProcessor implements PageProcessor {
         config.setPassword(Config.getString("rabbitmq.password"));
         config.setVirtualHost(Config.getString("rabbitmq.virtual.host"));
         QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.PPDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.PPDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
-        Bootstrap.startTest(queueInfo,new PPDaiPageProcessor()).start();
+//        Bootstrap.startTest(queueInfo,new PPDaiPageProcessor()).start();
 //        Spider.create(new PPDaiPageProcessor())
 //                //从"https://github.com/code4craft"开始抓
 //                .addUrl("http://www.ppdai.com/blacklist")

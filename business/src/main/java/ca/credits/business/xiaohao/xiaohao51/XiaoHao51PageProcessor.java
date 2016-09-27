@@ -15,14 +15,12 @@ import ca.credits.queue.impl.DefaultEventController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.amazonaws.util.Md5Utils;
 import com.google.common.util.concurrent.RateLimiter;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.scheduler.PushFailedException;
-import us.codecraft.webmagic.scheduler.component.HashSetDuplicateRemover;
 
 import java.text.ParseException;
 

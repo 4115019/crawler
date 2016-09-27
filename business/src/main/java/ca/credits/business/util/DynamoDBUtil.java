@@ -1,6 +1,5 @@
 package ca.credits.business.util;
 
-import ca.credits.business.AbstractTemplate;
 import ca.credits.common.config.Config;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
