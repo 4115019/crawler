@@ -2,10 +2,14 @@ package ca.credits.business.p2b.wangdai;
 
 import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.business.p2b.P2bTemplate;
+import ca.credits.common.filter.RedisBloomDuplicateFilter;
+import ca.credits.common.util.RedissonUtil;
 import ca.credits.deep.Bootstrap;
-import ca.credits.queue.ExchangeEnum;
-import ca.credits.queue.QueueInfo;
-import ca.credits.queue.SendRefuseException;
+import ca.credits.deep.RabbitSpider;
+import ca.credits.deep.scheduler.RabbimqScheduler;
+import ca.credits.deep.scheduler.RedisBloomFilterDuplicateRemover;
+import ca.credits.queue.*;
+import ca.credits.queue.impl.DefaultEventController;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -15,6 +19,7 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.processor.PageProcessor;
+import us.codecraft.webmagic.scheduler.component.HashSetDuplicateRemover;
 import us.codecraft.webmagic.selector.RegexSelector;
 
 import java.text.ParseException;
@@ -59,11 +64,28 @@ public class WangDaiPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) throws SendRefuseException {
-//        QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
+        QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
 
 
+        new HttpClientDownloader().download(new Request("http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=ip&rsv_pq=df3f2fe200004c61&rsv_t=6ef3fx3oacHs0FJOpiYwmBZHY7St90A9v1O%2BAZHsCp1pNh5drIE64y6yL%2Fo&rsv_enter=1&rsv_sug3=3&rsv_sug2=0&inputT=445&rsv_sug4=1120"),
+                Site.me().setHttpHost(new HttpHost("218.74.83.254",8888)));
 
-//        Bootstrap.startTest(queueInfo,new PPDaiPageProcessor()).getEventTemplate().send(queueInfo,new Request("http://www.5dai5.com/forum-44-1.html"));
+//        Bootstrap.startTest(queueInfo,new WangDaiPageProcessor()).getEventTemplate().send(queueInfo,new Request("http://www.5dai5.com/forum-44-1.html"));
+
+//        EventControlConfig config = new EventControlConfig("open-test.wecash.net");
+//        config.setUsername("wecash-admin");
+//        config.setPassword("wecash2015");
+//
+//        EventController eventController = DefaultEventController.getInstance(config);
+//
+//        RabbitSpider rabbitSpider = RabbitSpider.create(queueInfo, new WangDaiPageProcessor(),
+//                new RabbimqScheduler(eventController).setDuplicateRemover(new RedisBloomFilterDuplicateRemover(new RedisBloomDuplicateFilter(
+//                        100000,0.01,PlatformCodeEnum.P2B.WANGDAI.getCode(), RedissonUtil.getInstance().getRedisson()
+//                )))).rateLimiter(RateLimiter.create(10));
+//
+//        eventController.add(queueInfo,rabbitSpider);
+//
+//        eventController.start();;
 
 //        Bootstrap.startTest(queueInfo,new WangDaiPageProcessor(), RateLimiter.create(10)).start();
     }

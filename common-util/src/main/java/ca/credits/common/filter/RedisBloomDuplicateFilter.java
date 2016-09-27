@@ -3,6 +3,7 @@ package ca.credits.common.filter;
 import org.redisson.Redisson;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
 
 /**
  * Created by chenwen on 16/9/20.
@@ -16,7 +17,7 @@ public class RedisBloomDuplicateFilter implements IDuplicateFilter {
 
     private RAtomicLong counter;
 
-    private Redisson redisson;
+    private RedissonClient redisson;
 
     private String name;
 
@@ -29,11 +30,11 @@ public class RedisBloomDuplicateFilter implements IDuplicateFilter {
         this.expectedInsertions = bloomFilter.getExpectedInsertions();
     }
 
-    public RedisBloomDuplicateFilter(int expectedInsertions, String name, Redisson redisson){
+    public RedisBloomDuplicateFilter(int expectedInsertions, String name, RedissonClient redisson){
         this(expectedInsertions, 0.01, name, redisson);
     }
 
-    public RedisBloomDuplicateFilter(int expectedInsertions, double fpp,String name, Redisson redisson){
+    public RedisBloomDuplicateFilter(int expectedInsertions, double fpp,String name, RedissonClient redisson){
         this.expectedInsertions = expectedInsertions;
         this.fpp = fpp;
         this.name = name;

@@ -1,5 +1,7 @@
 package us.codecraft.webmagic.downloader;
 
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.entity.StringEntity;
 import us.codecraft.webmagic.proxy.HttpProxy;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.IOUtils;
@@ -30,10 +32,9 @@ import us.codecraft.webmagic.utils.HttpConstant;
 import us.codecraft.webmagic.utils.UrlUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -131,7 +132,7 @@ public class HttpClientDownloader extends AbstractDownloader {
     }
 
     protected HttpUriRequest getHttpUriRequest(Request request, Site site, Map<String, String> headers) {
-        RequestBuilder requestBuilder = selectRequestMethod(request).setUri(request.getUrl());
+        RequestBuilder requestBuilder = selectRequestMethod(request,site).setUri(request.getUrl());
         if (headers != null) {
             for (Map.Entry<String, String> headerEntry : headers.entrySet()) {
                 requestBuilder.addHeader(headerEntry.getKey(), headerEntry.getValue());
@@ -155,16 +156,42 @@ public class HttpClientDownloader extends AbstractDownloader {
         return requestBuilder.build();
     }
 
-    protected RequestBuilder selectRequestMethod(Request request) {
+    protected RequestBuilder selectRequestMethod(Request request,Site site) {
         String method = request.getMethod();
         if (method == null || method.equalsIgnoreCase(HttpConstant.Method.GET)) {
             //default get
             return RequestBuilder.get();
         } else if (method.equalsIgnoreCase(HttpConstant.Method.POST)) {
             RequestBuilder requestBuilder = RequestBuilder.post();
-            NameValuePair[] nameValuePair = (NameValuePair[]) request.getExtra("nameValuePair");
-            if (nameValuePair != null && nameValuePair.length > 0) {
-                requestBuilder.addParameters(nameValuePair);
+            NameValuePair[] nameValuePair = site.getNameValuePair();
+            if (nameValuePair != null && nameValuePair.length > 0)
+            {
+                List<NameValuePair> nameValuePairList = new ArrayList<>();
+                for (NameValuePair nameValuePair1: site.getNameValuePair())
+                {
+                    nameValuePairList.add(nameValuePair1);
+                }
+                try {
+                    requestBuilder.setEntity(new UrlEncodedFormEntity(nameValuePairList,site.getCharset()));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (StringUtils.isNotEmpty(site.getContentType()))
+            {
+                if (StringUtils.isNotEmpty(site.getBody())) {
+                    try {
+                        requestBuilder.setEntity(new StringEntity(site.getBody(), site.getContentType(), site.getCharset()));
+                    } catch (UnsupportedEncodingException e) {
+                        logger.error("不支持此类型",e);
+                    }
+                }
+            }
+            else
+            {
+                if (StringUtils.isNotEmpty(site.getBody())) {
+                    requestBuilder.setEntity(new StringEntity(site.getBody(), site.getCharset()));
+                }
             }
             return requestBuilder;
         } else if (method.equalsIgnoreCase(HttpConstant.Method.HEAD)) {

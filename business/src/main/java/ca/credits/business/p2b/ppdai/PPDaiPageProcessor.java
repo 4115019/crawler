@@ -62,9 +62,13 @@ public class PPDaiPageProcessor implements PageProcessor {
 
     public static void main(String[] args) throws PushFailedException {
 
-        EventControlConfig config  = null;
+        EventControlConfig config  = new EventControlConfig("rabbit-haproxy-428447413.cn-north-1.elb.amazonaws.com.cn");
+//        EventControlConfig config  = new EventControlConfig("54.223.115.197");
+        config.setUsername("deep-crawler");
+        config.setPassword("Pa88word.123");
+        config.setVirtualHost("crawler");
         QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.PPDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.PPDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
-        Bootstrap.startTest(queueInfo,new PPDaiPageProcessor()).start();
+//        Bootstrap.startTest(queueInfo,new PPDaiPageProcessor()).start();
 //        Spider.create(new PPDaiPageProcessor())
 //                //从"https://github.com/code4craft"开始抓
 //                .addUrl("http://www.ppdai.com/blacklist")
