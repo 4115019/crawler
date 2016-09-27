@@ -20,6 +20,7 @@ import us.codecraft.webmagic.utils.UrlUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -404,7 +405,7 @@ public class Spider implements Runnable, Task {
      *
      * @param urls urls to process
      */
-    public void test(String... urls) {
+    public void test(String... urls) throws ParseException {
         initComponent();
         if (urls.length > 0) {
             for (String url : urls) {
@@ -413,7 +414,7 @@ public class Spider implements Runnable, Task {
         }
     }
 
-    protected void processRequest(Request request) {
+    protected void processRequest(Request request) throws ParseException {
         Page page = downloader.download(request , this.site , this);
         if (page == null) {
             sleep(site.getRetrySleepTime());

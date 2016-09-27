@@ -2,15 +2,11 @@ package ca.credits.business.p2b.wangdai;
 
 import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.business.p2b.P2bTemplate;
-import ca.credits.common.filter.RedisBloomDuplicateFilter;
-import ca.credits.common.util.RedissonUtil;
-import ca.credits.deep.Bootstrap;
-import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbimqScheduler;
-import ca.credits.deep.scheduler.RedisBloomFilterDuplicateRemover;
-import ca.credits.queue.*;
-import ca.credits.queue.impl.DefaultEventController;
-import com.google.common.util.concurrent.RateLimiter;
+import ca.credits.common.config.Config;
+import ca.credits.queue.EventControlConfig;
+import ca.credits.queue.ExchangeEnum;
+import ca.credits.queue.QueueInfo;
+import ca.credits.queue.SendRefuseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
@@ -19,7 +15,6 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.scheduler.component.HashSetDuplicateRemover;
 import us.codecraft.webmagic.selector.RegexSelector;
 
 import java.text.ParseException;
@@ -65,8 +60,10 @@ public class WangDaiPageProcessor implements PageProcessor {
 
     public static void main(String[] args) throws SendRefuseException {
         QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.WANGDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
-
-
+        EventControlConfig config = new EventControlConfig(Config.getString("rabbitmq.host"));
+        config.setUsername(Config.getString("rabbitmq.username"));
+        config.setPassword(Config.getString("rabbitmq.password"));
+        config.setVirtualHost(Config.getString("rabbitmq.virtual.host"));
         new HttpClientDownloader().download(new Request("http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=ip&rsv_pq=df3f2fe200004c61&rsv_t=6ef3fx3oacHs0FJOpiYwmBZHY7St90A9v1O%2BAZHsCp1pNh5drIE64y6yL%2Fo&rsv_enter=1&rsv_sug3=3&rsv_sug2=0&inputT=445&rsv_sug4=1120"),
                 Site.me().setHttpHost(new HttpHost("218.74.83.254",8888)));
 
@@ -86,7 +83,5 @@ public class WangDaiPageProcessor implements PageProcessor {
 //        eventController.add(queueInfo,rabbitSpider);
 //
 //        eventController.start();;
-
-//        Bootstrap.startTest(queueInfo,new WangDaiPageProcessor(), RateLimiter.create(10)).start();
     }
 }

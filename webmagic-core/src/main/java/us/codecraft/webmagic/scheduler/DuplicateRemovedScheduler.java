@@ -31,14 +31,11 @@ public abstract class DuplicateRemovedScheduler implements Scheduler {
     @Override
     public void push(Request request, Task task) throws PushFailedException {
         logger.trace("get a candidate url {}", request.getUrl());
-        if (!duplicatedRemover.isDuplicate(request, task) || shouldReserved(request)) {
+        if (!duplicatedRemover.isDuplicate(request, task)) {
+
             logger.debug("push to queue {}", request.getUrl());
             pushWhenNoDuplicate(request, task);
         }
-    }
-
-    protected boolean shouldReserved(Request request) {
-        return request.getExtra(Request.CYCLE_TRIED_TIMES) != null;
     }
 
     protected void pushWhenNoDuplicate(Request request, Task task) throws PushFailedException {

@@ -2,25 +2,16 @@ package ca.credits.business.p2b.ppdai;
 
 import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.business.p2b.P2bTemplate;
-import ca.credits.deep.Bootstrap;
-import ca.credits.deep.IFailedListener;
-import ca.credits.deep.ISiteGen;
-import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbimqScheduler;
+import ca.credits.common.config.Config;
 import ca.credits.queue.EventControlConfig;
-import ca.credits.queue.EventController;
 import ca.credits.queue.ExchangeEnum;
 import ca.credits.queue.QueueInfo;
-import ca.credits.queue.impl.DefaultEventController;
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import us.codecraft.webmagic.Page;
-import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.scheduler.PushFailedException;
-import us.codecraft.webmagic.scheduler.component.HashSetDuplicateRemover;
 
 import java.util.List;
 
@@ -61,12 +52,10 @@ public class PPDaiPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) throws PushFailedException {
-
-        EventControlConfig config  = new EventControlConfig("rabbit-haproxy-428447413.cn-north-1.elb.amazonaws.com.cn");
-//        EventControlConfig config  = new EventControlConfig("54.223.115.197");
-        config.setUsername("deep-crawler");
-        config.setPassword("Pa88word.123");
-        config.setVirtualHost("crawler");
+        EventControlConfig config = new EventControlConfig(Config.getString("rabbitmq.host"));
+        config.setUsername(Config.getString("rabbitmq.username"));
+        config.setPassword(Config.getString("rabbitmq.password"));
+        config.setVirtualHost(Config.getString("rabbitmq.virtual.host"));
         QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.PPDAI.getCode()).exchangeName(PlatformCodeEnum.P2B.PPDAI.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
 //        Bootstrap.startTest(queueInfo,new PPDaiPageProcessor()).start();
 //        Spider.create(new PPDaiPageProcessor())

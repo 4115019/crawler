@@ -3,6 +3,7 @@ package us.codecraft.webmagic.processor;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 
+import java.text.ParseException;
 /**
  * Interface to be implemented to customize a crawler.<br>
  * <br>
@@ -24,7 +25,8 @@ public interface PageProcessor {
      *
      * @param page
      */
-    public void process(Page page);
+    void process(Page page) throws ParseException;
+
 
     /**
      * get the site settings
@@ -32,5 +34,5 @@ public interface PageProcessor {
      * @return site
      * @see Site
      */
-    public Site getSite();
+    Site getSite();
 }
