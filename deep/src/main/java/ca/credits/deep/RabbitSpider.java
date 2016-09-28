@@ -19,7 +19,9 @@ import us.codecraft.webmagic.utils.UrlUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by chenwen on 16/9/20.
@@ -45,7 +47,9 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
 
     protected ISiteGen siteGen;
 
-    protected RateLimiter rateLimiter;
+    protected Double permitsPerSecond;
+
+    protected Map<String,RateLimiter> rateLimiterMap = new ConcurrentHashMap<>();
 
     protected List<IFailedListener> listeners = new ArrayList<>();
 
@@ -73,8 +77,8 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
         return this;
     }
 
-    public RabbitSpider rateLimiter(RateLimiter rateLimiter){
-        this.rateLimiter = rateLimiter;
+    public RabbitSpider permitsPerSecond(Double permitsPerSecond){
+        this.permitsPerSecond = permitsPerSecond;
         return this;
     }
 
@@ -129,6 +133,23 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
         }
     }
 
+    /**
+     * start rate limit
+     * @param site site
+     */
+    private void startRateLimit(Site site){
+        if (permitsPerSecond != null && permitsPerSecond > 0.00001) {
+            if (rateLimiterMap.get(site.getRateLimitKey()) == null){
+                synchronized (RabbitSpider.class) {
+                    if (rateLimiterMap.get(site.getRateLimitKey()) == null) {
+                        rateLimiterMap.put(site.getRateLimitKey(), RateLimiter.create(permitsPerSecond));
+                    }
+                }
+            }
+            rateLimiterMap.get(site.getRateLimitKey()).acquire();
+        }
+    }
+
     @Override
     public void process(Request request) throws Exception {
         StopWatch stopWatch = new StopWatch();
@@ -138,15 +159,9 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
         long retryTimes = request.getExtras().getLong(Request.RETRY_TIMES,0L);
         Site site = null;
         try {
-            /**
-             * step 1: if rate limiter not null , rate limiter acquire
-             */
-            if (rateLimiter != null){
-                rateLimiter.acquire();
-            }
 
             /**
-             * step 2: init component
+             * step 1: init component
              */
             initComponent();
 
@@ -157,6 +172,12 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
             if (site == null){
                 site = getSite();
             }
+
+
+            /**
+             * step 2: if permitsPerSecond not null , rate limiter acquire
+             */
+            startRateLimit(site);
 
             /**
              * step 3: start download page
@@ -173,7 +194,6 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
                         pipeline.process(page.getResultItems(), this);
                     }
                 }
-                sleep(site.getSleepTime());
                 isSuccess = true;
             }
         }catch (Throwable e){
@@ -183,7 +203,7 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
                 try {
                     if (site != null && retryTimes < site.getRetryTimes()) {
                         request.putExtra(Request.RETRY_TIMES,retryTimes+1);
-                        push(request);
+                        process(request);
                     } else {
                         onError(request,site);
                     }

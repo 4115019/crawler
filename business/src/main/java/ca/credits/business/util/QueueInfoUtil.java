@@ -11,4 +11,7 @@ public class QueueInfoUtil {
     public static QueueInfo getQueueInfo(PlatformCodeEnum.INameCode nameCode){
         return QueueInfo.builder().queueName(nameCode.getCode()).exchangeName(nameCode.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
     }
+    public static QueueInfo getFailedQueueInfo(PlatformCodeEnum.INameCode nameCode){
+        return QueueInfo.builder().queueName(String.format("%s:failed",nameCode.getCode())).exchangeName(nameCode.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
+    }
 }

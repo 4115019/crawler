@@ -6,7 +6,7 @@ import ca.credits.business.xiaohao.XiaohaoTemplate;
 import ca.credits.common.config.Config;
 import ca.credits.common.util.HttpMethod;
 import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbimqScheduler;
+import ca.credits.deep.scheduler.RabbitmqScheduler;
 import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.EventController;
 import ca.credits.queue.ExchangeEnum;
@@ -15,7 +15,6 @@ import ca.credits.queue.impl.DefaultEventController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.util.concurrent.RateLimiter;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -42,7 +41,7 @@ public class XiaoHao51PageProcessor implements PageProcessor {
                                                 .exchangeName(PlatformCodeEnum.VirtualPhone.XIAOHAO51.getCode())
                                                 .exchangeType(ExchangeEnum.DIRECT).build();
         RabbitSpider rabbitSpider = RabbitSpider.create(queueInfo, new XiaoHao51PageProcessor(),
-                new RabbimqScheduler(eventController)).rateLimiter(RateLimiter.create(0.5))
+                new RabbitmqScheduler(eventController)).permitsPerSecond(0.5)
                 .pipelines(new DynamodbPipeline(XiaohaoTemplate.TABLE_NAME));
         eventController.add(queueInfo, rabbitSpider);
 

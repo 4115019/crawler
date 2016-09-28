@@ -12,10 +12,10 @@ import us.codecraft.webmagic.scheduler.Scheduler;
  * Created by chenwen on 16/9/20.
  */
 @ThreadSafe
-public class RabbimqScheduler implements Scheduler{
+public class RabbitmqScheduler implements Scheduler{
     private EventController eventController;
 
-    public RabbimqScheduler(EventController eventController){
+    public RabbitmqScheduler(EventController eventController){
         this.eventController = eventController;
     }
 

@@ -1,19 +1,17 @@
 package ca.credits.business.p2b.ledao;
 
 import ca.credits.business.enums.PlatformCodeEnum;
+import ca.credits.business.p2b.P2bBootstrap;
 import ca.credits.business.p2b.P2bTemplate;
 import ca.credits.business.pipeline.DynamodbPipeline;
 import ca.credits.common.config.Config;
-import ca.credits.deep.ISiteGen;
 import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbimqDuplicateScheduler;
-import ca.credits.deep.scheduler.RabbimqScheduler;
+import ca.credits.deep.scheduler.RabbitmqDuplicateScheduler;
 import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.EventController;
 import ca.credits.queue.ExchangeEnum;
 import ca.credits.queue.QueueInfo;
 import ca.credits.queue.impl.DefaultEventController;
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -22,6 +20,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.scheduler.PushFailedException;
 import us.codecraft.webmagic.scheduler.component.HashSetDuplicateRemover;
 import us.codecraft.webmagic.selector.Selectable;
+import us.codecraft.webmagic.utils.HttpProxyUtil;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ import java.util.List;
  */
 @Slf4j
 public class LeDaoPageProcessor implements PageProcessor {
-    private Site site = Site.me().setRetryTimes(3).setSleepTime(1000);
+    private Site site = Site.me().setRetryTimes(3).setSleepTime(100);
     @Override
     public void process(Page page) {
         List<Selectable> nodes = page.getHtml().xpath("//*[@class=\"table_input2\"]").css("tr").nodes();
@@ -60,22 +59,13 @@ public class LeDaoPageProcessor implements PageProcessor {
         return site;
     }
     public static void main(String[] args) throws PushFailedException {
-        EventControlConfig config = new EventControlConfig(Config.getString("rabbitmq.host"));
-        config.setUsername(Config.getString("rabbitmq.username"));
-        config.setPassword(Config.getString("rabbitmq.password"));
-        config.setVirtualHost(Config.getString("rabbitmq.virtual.host"));
-
-        EventController eventController = DefaultEventController.getInstance(config);
-        QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.LEDAO.getCode())
-                                                .exchangeName(PlatformCodeEnum.P2B.LEDAO.getCode())
-                                                .exchangeType(ExchangeEnum.DIRECT).build();
-        RabbitSpider rabbitSpider = RabbitSpider.create(queueInfo,new LeDaoPageProcessor(),new RabbimqDuplicateScheduler(eventController).setDuplicateRemover(new HashSetDuplicateRemover()))
-                .rateLimiter(RateLimiter.create(0.5))
-                .siteGen(request -> Site.me().setRetryTimes(3).setSleepTime(1000).setCharset("GBK"))
-                .pipelines(new DynamodbPipeline(P2bTemplate.TABLE_NAME));
-        eventController.add(queueInfo,rabbitSpider);
-        rabbitSpider.push(new Request("http://www.ledaosw.com/blacklist/index.html"));
-        eventController.start();
+        P2bBootstrap.start(
+                PlatformCodeEnum.P2B.LEDAO,
+                new LeDaoPageProcessor(),
+                0.5,
+                request -> Site.me().setRetryTimes(3).setSleepTime(100).setCharset("GBK").httpProxy(HttpProxyUtil.getHttpProxy()),
+                new Request("http://www.ledaosw.com/blacklist/index.html")
+                );
 
     }
 }

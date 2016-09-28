@@ -13,10 +13,10 @@ import us.codecraft.webmagic.scheduler.PushFailedException;
  * Created by chenwen on 16/9/20.
  */
 @ThreadSafe
-public class RabbimqDuplicateScheduler extends DuplicateRemovedScheduler {
+public class RabbitmqDuplicateScheduler extends DuplicateRemovedScheduler {
     private EventController eventController;
 
-    public RabbimqDuplicateScheduler(EventController eventController){
+    public RabbitmqDuplicateScheduler(EventController eventController){
         this.eventController = eventController;
     }
 
