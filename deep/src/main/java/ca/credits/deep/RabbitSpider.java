@@ -181,7 +181,7 @@ public class RabbitSpider implements EventProcessor<Request>,Task{
         }finally {
             if (!isSuccess){
                 try {
-                    if (retryTimes < site.getRetryTimes()) {
+                    if (site != null && retryTimes < site.getRetryTimes()) {
                         request.putExtra(Request.RETRY_TIMES,retryTimes+1);
                         push(request);
                     } else {
