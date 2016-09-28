@@ -186,12 +186,12 @@ public class YmaPlatformPageProcessor extends JiemaPlatformAbstractTemplate {
 
         eventController.add(queueInfo, rabbitSpider);
 
-//        Request loginRequest = new Request("http://api.yma0.com/http.aspx?action=loginIn&uid=neimeng2830&pwd=yma2830");
-//        loginRequest.putExtra("uid", "neimeng2830");
-//        loginRequest.putExtra("pwd", "yma2830");
-//        loginRequest.putExtra("itemId", "33937");
-//        loginRequest.putExtra("count", "10");
-//        rabbitSpider.push(loginRequest);
+        Request loginRequest = new Request("http://api.yma0.com/http.aspx?action=loginIn&uid=neimeng2830&pwd=yma2830");
+        loginRequest.putExtra("uid", "neimeng2830");
+        loginRequest.putExtra("pwd", "yma2830");
+        loginRequest.putExtra("itemId", "33937");
+        loginRequest.putExtra("count", "10");
+        rabbitSpider.push(loginRequest);
 
         eventController.start();
 

@@ -46,9 +46,9 @@ public class XiaoHao51PageProcessor implements PageProcessor {
                 .pipelines(new DynamodbPipeline(XiaohaoTemplate.TABLE_NAME));
         eventController.add(queueInfo, rabbitSpider);
 
-//        Request request = new Request("http://www.5151sjh.com:8080/vpn/interfaceService/queryVirtualList?areaId=2299&busiType=3&key=8ceaf082ace08112&request=ewogICJjaGFubmVsIiA6ICJBcHBTdHJvZVNDIiwKICAiaGFzaENvZGUiIDogIjJhYjJkZmZlMTk3MmM0NzEzNTZjYTM3NTdhOTU3NDBlIiwKICAicGhvbmVPcyIgOiAiMiIsCiAgInRpbWVTdGFtcCIgOiAiMTQ3NDYyMTMyNSIsCiAgInZlcnNpb24iIDogIjMuMC40IiwKICAicmVxdWVzdElkIiA6ICIwOTNiYWM1OTdmNGU1MGVmZjg4MDlkODkyZDJlMjQ4ZGQzYTA1YmM4MTQ3NDYyMTMyNSIKfQ%3D%3D&userNo=18210036590");
-//        request.setMethod(HttpMethod.HTTP_METHOD.HTTP_POST.getString());
-//        rabbitSpider.push(request);
+        Request request = new Request("http://www.5151sjh.com:8080/vpn/interfaceService/queryVirtualList?areaId=2299&busiType=3&key=8ceaf082ace08112&request=ewogICJjaGFubmVsIiA6ICJBcHBTdHJvZVNDIiwKICAiaGFzaENvZGUiIDogIjJhYjJkZmZlMTk3MmM0NzEzNTZjYTM3NTdhOTU3NDBlIiwKICAicGhvbmVPcyIgOiAiMiIsCiAgInRpbWVTdGFtcCIgOiAiMTQ3NDYyMTMyNSIsCiAgInZlcnNpb24iIDogIjMuMC40IiwKICAicmVxdWVzdElkIiA6ICIwOTNiYWM1OTdmNGU1MGVmZjg4MDlkODkyZDJlMjQ4ZGQzYTA1YmM4MTQ3NDYyMTMyNSIKfQ%3D%3D&userNo=18210036590");
+        request.setMethod(HttpMethod.HTTP_METHOD.HTTP_POST.getString());
+        rabbitSpider.push(request);
 
         eventController.start();
     }

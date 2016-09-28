@@ -78,7 +78,7 @@ public class AliXiaoHaoPageProcessor implements PageProcessor{
                 .pipelines(new DynamodbPipeline(XiaohaoTemplate.TABLE_NAME));
         eventController.add(queueInfo, rabbitSpider);
 
-//        rabbitSpider.push(new Request("http://aliqin.m.tmall.com/usercenter/secret_info.do?ver=2.0&_input_charset=UTF-8&m=GetSecretNos&phone_no=18210036590&num=8&like=&callback=jsonp3"));
+        rabbitSpider.push(new Request("http://aliqin.m.tmall.com/usercenter/secret_info.do?ver=2.0&_input_charset=UTF-8&m=GetSecretNos&phone_no=18210036590&num=8&like=&callback=jsonp3"));
 
         eventController.start();
     }

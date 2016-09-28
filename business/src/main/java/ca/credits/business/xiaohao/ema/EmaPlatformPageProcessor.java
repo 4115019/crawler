@@ -49,13 +49,13 @@ public class EmaPlatformPageProcessor extends JiemaPlatformAbstractTemplate {
 
         eventController.add(queueInfo,rabbitSpider);
 
-//        Request loginRequest = new Request("http://api.ema6.com:20161/Api/userLogin?uName=neimeng2830&pWord=ema2830&Developer=KN4W9lxeXWSHQnO8h95rKg%3d%3d");
-//        loginRequest.putExtra("uid","neimeng2830");
-//        loginRequest.putExtra("password","ema2830");
-//        loginRequest.putExtra("developer","KN4W9lxeXWSHQnO8h95rKg%3d%3d");
-//        loginRequest.putExtra("itemId","718");
-//        loginRequest.putExtra("count","30");
-//        rabbitSpider.push(loginRequest);
+        Request loginRequest = new Request("http://api.ema6.com:20161/Api/userLogin?uName=neimeng2830&pWord=ema2830&Developer=KN4W9lxeXWSHQnO8h95rKg%3d%3d");
+        loginRequest.putExtra("uid","neimeng2830");
+        loginRequest.putExtra("password","ema2830");
+        loginRequest.putExtra("developer","KN4W9lxeXWSHQnO8h95rKg%3d%3d");
+        loginRequest.putExtra("itemId","718");
+        loginRequest.putExtra("count","30");
+        rabbitSpider.push(loginRequest);
 
         eventController.start();
 

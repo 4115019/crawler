@@ -49,13 +49,13 @@ public class ShenhuaPlatformPageProcessor extends JiemaPlatformAbstractTemplate 
 
         eventController.add(queueInfo, rabbitSpider);
 
-//        Request loginRequest = new Request("http://api.shjmpt.com:9002/pubApi/uLogin?uName=neimeng2830&pWord=shenhua2830&Developer=DL6Gf%2bgxIdQEYNFhLwkUtg%3d%3d");
-//        loginRequest.putExtra("uid", "neimeng2830");
-//        loginRequest.putExtra("password", "shenhua2830");
-//        loginRequest.putExtra("developer", "DL6Gf%2bgxIdQEYNFhLwkUtg%3d%3d");
-//        loginRequest.putExtra("itemId", "76");
-//        loginRequest.putExtra("count", "30");
-//        rabbitSpider.push(loginRequest);
+        Request loginRequest = new Request("http://api.shjmpt.com:9002/pubApi/uLogin?uName=neimeng2830&pWord=shenhua2830&Developer=DL6Gf%2bgxIdQEYNFhLwkUtg%3d%3d");
+        loginRequest.putExtra("uid", "neimeng2830");
+        loginRequest.putExtra("password", "shenhua2830");
+        loginRequest.putExtra("developer", "DL6Gf%2bgxIdQEYNFhLwkUtg%3d%3d");
+        loginRequest.putExtra("itemId", "76");
+        loginRequest.putExtra("count", "30");
+        rabbitSpider.push(loginRequest);
 
         eventController.start();
 

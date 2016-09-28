@@ -81,7 +81,7 @@ public class ShiXinPageProcessor implements PageProcessor{
             rabbitSpider.push(new Request(String.format(url,i*10)));
         }
 
-//        rabbitSpider.push(new Request("https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=6899&query=%E5%A4%B1%E4%BF%A1%E8%A2%AB%E6%89%A7%E8%A1%8C%E4%BA%BA&pn=180&rn=10&ie=utf-8&oe=utf-8&format=json&t=1474529801500&cb=jQuery110205811325080133857_1474526931162&_=1474526931172"));
+        rabbitSpider.push(new Request("https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=6899&query=%E5%A4%B1%E4%BF%A1%E8%A2%AB%E6%89%A7%E8%A1%8C%E4%BA%BA&pn=180&rn=10&ie=utf-8&oe=utf-8&format=json&t=1474529801500&cb=jQuery110205811325080133857_1474526931162&_=1474526931172"));
 
         eventController.start();
     }
