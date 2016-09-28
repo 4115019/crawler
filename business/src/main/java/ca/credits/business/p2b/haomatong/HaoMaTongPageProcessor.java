@@ -1,34 +1,16 @@
 package ca.credits.business.p2b.haomatong;
 
-import ca.credits.business.DeepCrawlerFailedListener;
 import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.business.p2b.P2bBootstrap;
 import ca.credits.business.p2b.P2bTemplate;
-import ca.credits.business.pipeline.DynamodbPipeline;
-import ca.credits.business.util.EventControlUtil;
-import ca.credits.business.util.QueueInfoUtil;
-import ca.credits.common.config.Config;
-import ca.credits.common.filter.RedisHashSetDuplicateFilter;
 import ca.credits.common.util.Md5Util;
-import ca.credits.common.util.RedissonUtil;
-import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbitmqDuplicateScheduler;
-import ca.credits.deep.scheduler.RedisDuplicateRemover;
-import ca.credits.queue.EventControlConfig;
-import ca.credits.queue.EventController;
-import ca.credits.queue.ExchangeEnum;
-import ca.credits.queue.QueueInfo;
-import ca.credits.queue.impl.DefaultEventController;
 import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.scheduler.PushFailedException;
-import us.codecraft.webmagic.scheduler.component.HashSetDuplicateRemover;
 import us.codecraft.webmagic.selector.Selectable;
-import us.codecraft.webmagic.utils.HttpProxyUtil;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;

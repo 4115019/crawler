@@ -30,8 +30,9 @@ public class PPDaiPageProcessorTest {
 //                                        RedissonUtil.getInstance().getRedisson())));
 //        scheduler.push(new Request("http://www.ppdai.com/blacklistdetail/pdu6372601272"),null);
 
-        RSet set = RedissonUtil.getInstance().getRedisson().getSet(PlatformCodeEnum.P2B.PPDAI.getCode());
+        RSet<String> set = RedissonUtil.getInstance().getRedisson().getSet(PlatformCodeEnum.P2B.PPDAI.getCode());
 
+        set.add("2");
         log.info(set.size() + "");
 
 

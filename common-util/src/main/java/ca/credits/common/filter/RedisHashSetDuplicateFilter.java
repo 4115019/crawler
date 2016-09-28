@@ -1,33 +1,32 @@
 package ca.credits.common.filter;
 
-import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by chenwen on 16/9/20.
  */
 public class RedisHashSetDuplicateFilter implements IDuplicateFilter {
-    private RSet<String> keys;
+    private String name;
+
+    private RedissonClient redisson;
 
     public RedisHashSetDuplicateFilter(String name, RedissonClient redisson){
-        this.keys = redisson.getSet(name);
-        this.keys.expire(Long.MAX_VALUE, TimeUnit.DAYS);
+        this.name = name;
+        this.redisson = redisson;
     }
 
     @Override
     public boolean isDuplicate(String key) {
-        return !keys.add(key);
+        return !redisson.getSet(name).add(key);
     }
 
     @Override
     public long size() {
-        return keys.size();
+        return redisson.getSet(name).size();
     }
 
     @Override
     public void reset() {
-        keys.clear();
+        redisson.getSet(name).clear();
     }
 }

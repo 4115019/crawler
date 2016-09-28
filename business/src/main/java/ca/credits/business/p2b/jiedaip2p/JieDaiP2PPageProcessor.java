@@ -3,16 +3,6 @@ package ca.credits.business.p2b.jiedaip2p;
 import ca.credits.business.enums.PlatformCodeEnum;
 import ca.credits.business.p2b.P2bBootstrap;
 import ca.credits.business.p2b.P2bTemplate;
-import ca.credits.business.pipeline.DynamodbPipeline;
-import ca.credits.common.config.Config;
-import ca.credits.deep.ISiteGen;
-import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbitmqDuplicateScheduler;
-import ca.credits.queue.EventControlConfig;
-import ca.credits.queue.EventController;
-import ca.credits.queue.ExchangeEnum;
-import ca.credits.queue.QueueInfo;
-import ca.credits.queue.impl.DefaultEventController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import us.codecraft.webmagic.Page;
@@ -20,7 +10,6 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.scheduler.PushFailedException;
-import us.codecraft.webmagic.scheduler.component.HashSetDuplicateRemover;
 import us.codecraft.webmagic.selector.Selectable;
 import us.codecraft.webmagic.utils.HttpProxyUtil;
 
@@ -88,6 +77,7 @@ public class JieDaiP2PPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) throws PushFailedException {
+
         P2bBootstrap.start(
                 PlatformCodeEnum.P2B.JIEDAIP2P
                 , new JieDaiP2PPageProcessor()
