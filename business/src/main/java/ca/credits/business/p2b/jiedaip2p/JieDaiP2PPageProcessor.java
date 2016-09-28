@@ -39,7 +39,7 @@ public class JieDaiP2PPageProcessor implements PageProcessor {
 
         SimpleDateFormat origin = new SimpleDateFormat("yyyy/MM/dd");
 
-        for (int index = 2; index < nodes.size(); index += 6) {
+        for (int index = 2; index + 3 < nodes.size(); index += 6) {
             P2bTemplate template = new P2bTemplate(PlatformCodeEnum.P2B.JIEDAIP2P);
             Selectable selectable = nodes.get(index);
             template.setName(selectable.regex("姓名：([\\S\\s]*?)</td>").toString());

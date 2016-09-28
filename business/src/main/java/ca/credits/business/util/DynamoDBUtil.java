@@ -58,7 +58,7 @@ public class DynamoDBUtil {
         /**
          * 查询特定条件的数据总数
          */
-        queryCount(PlatformCodeEnum.P2B.SHIXIN);
+        queryCount(PlatformCodeEnum.P2B.JIEDAIP2P);
     }
 
     public static int queryCount(PlatformCodeEnum.INameCode nameCode){

@@ -48,12 +48,6 @@ public class ShiXinPageProcessor implements PageProcessor{
                 }
             }
         }
-
-        String url = "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=6899&query=失信被执行人&pn=%s&rn=10&ie=utf-8&oe=utf-8&format=json&t=1474529801500&cb=jQuery110205811325080133857_1474526931162&_=1474526931172";
-        int index = Integer.parseInt((String) page.getRequest().getExtra("index"));
-        Request request = new Request(String.format(url,(index+1)*10));
-        request.putExtra("index",index + 1);
-        page.addTargetRequest(request);
     }
 
     @Override
@@ -64,8 +58,8 @@ public class ShiXinPageProcessor implements PageProcessor{
     public static void main(String[] args) throws PushFailedException {
         Collection<Request> requests = new ArrayList<>();
         String url = "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=6899&query=失信被执行人&pn=%s&rn=10&ie=utf-8&oe=utf-8&format=json&t=1474529801500&cb=jQuery110205811325080133857_1474526931162&_=1474526931172";
-        for(int i=1 ;i < 20000;i++){
-            requests.add(new Request(String.format(url,i*10)));
+        for(int i=1 ;i < 20;i++){
+            requests.add(new Request(String.format(url,i*50)));
         }
         P2bBootstrap.start(PlatformCodeEnum.P2B.SHIXIN,new ShiXinPageProcessor(),0.5,new Request("https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=6899&query=失信被执行人&pn=100&rn=10&ie=utf-8&oe=utf-8&format=json&t=1474529801500&cb=jQuery110205811325080133857_1474526931162&_=1474526931172"));
 //        EventController eventController = EventControlUtil.getEventController();
