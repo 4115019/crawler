@@ -1,19 +1,18 @@
 package ca.credits.business.p2b.ppdai;
 
+import ca.credits.business.DeepCrawlerFailedListener;
 import ca.credits.business.enums.PlatformCodeEnum;
+import ca.credits.business.p2b.P2bBootstrap;
 import ca.credits.business.p2b.P2bTemplate;
 import ca.credits.business.pipeline.DynamodbPipeline;
 import ca.credits.business.util.EventControlUtil;
 import ca.credits.business.util.QueueInfoUtil;
-import ca.credits.common.config.Config;
-import ca.credits.common.filter.RedisBloomDuplicateFilter;
 import ca.credits.common.filter.RedisHashSetDuplicateFilter;
 import ca.credits.common.util.RedissonUtil;
 import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbimqDuplicateScheduler;
-import ca.credits.deep.scheduler.RedisBloomFilterDuplicateRemover;
+import ca.credits.deep.scheduler.RabbitmqDuplicateScheduler;
+import ca.credits.deep.scheduler.RedisDuplicateRemover;
 import ca.credits.queue.*;
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import us.codecraft.webmagic.Page;
@@ -62,16 +61,6 @@ public class PPDaiPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) throws PushFailedException, SendRefuseException {
-        QueueInfo queueInfo = QueueInfoUtil.getQueueInfo(PlatformCodeEnum.P2B.PPDAI);
-        EventController eventController = EventControlUtil.getEventController();
-        RabbitSpider spider = RabbitSpider
-                .create(queueInfo,new PPDaiPageProcessor(),new RabbimqDuplicateScheduler(eventController).setDuplicateRemover(new RedisBloomFilterDuplicateRemover(new RedisHashSetDuplicateFilter(PlatformCodeEnum.P2B.PPDAI.getCode(), RedissonUtil.getInstance().getRedisson()))))
-                .siteGen(request -> Site.me().setRetryTimes(3).setSleepTime(100).httpProxy(HttpProxyUtil.getHttpProxy()))
-                .rateLimiter(RateLimiter.create(1))
-                .listener((request, site1) -> log.error("请求失败",request.getUrl(),new Exception()))
-                .pipelines(new DynamodbPipeline(P2bTemplate.TABLE_NAME));
-        eventController.getEventTemplate().send(queueInfo,new Request("http://www.ppdai.com/blacklist"));
-        eventController.add(queueInfo,spider);
-        eventController.start();
+        P2bBootstrap.start(PlatformCodeEnum.P2B.PPDAI,new PPDaiPageProcessor(), 0.1 , new Request("http://www.ppdai.com/blacklist"));
     }
 }

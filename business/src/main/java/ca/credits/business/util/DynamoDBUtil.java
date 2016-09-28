@@ -13,6 +13,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
+import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Template;
 
 import java.util.Collection;
@@ -23,6 +24,7 @@ import java.util.Map;
 /**
  * Created by huangpin on 16/9/26.
  */
+@Slf4j
 public class DynamoDBUtil {
     private static DynamoDBMapper getMapper(){
         /**
@@ -54,50 +56,25 @@ public class DynamoDBUtil {
 
     public static void main(String[] args) {
         /**
-         * 查询表中总共多少条数据
-         */
-        DynamoDBScanExpression dynamoDBScanExpression = new DynamoDBScanExpression();
-        int count = getMapper().count(XiaohaoTemplate.class,dynamoDBScanExpression);
-        System.out.println("count="+count);
-
-        /**
          * 查询特定条件的数据总数
          */
+        queryCount(PlatformCodeEnum.P2B.SHIXIN);
+    }
+
+    public static int queryCount(PlatformCodeEnum.INameCode nameCode){
+        DynamoDBScanExpression dynamoDBScanExpression = new DynamoDBScanExpression();
         Map<String, Condition> filter = new HashMap<String, Condition>();
         filter.put("plat_code",new Condition().withComparisonOperator(ComparisonOperator.EQ).withAttributeValueList(
-                new AttributeValue().withS("X00001")));
+                new AttributeValue().withS(nameCode.getCode())));
         dynamoDBScanExpression.setScanFilter(filter);
-        int x00001 = getMapper().count(XiaohaoTemplate.class,dynamoDBScanExpression);
-        System.out.println("X00001="+x00001);
+        int count = 0;
+        if (nameCode instanceof PlatformCodeEnum.P2B){
+            count = getMapper().count(P2bTemplate.class,dynamoDBScanExpression);
+        }else {
+            count = getMapper().count(XiaohaoTemplate.class,dynamoDBScanExpression);
+        }
 
-        filter.clear();
-        filter.put("plat_code",new Condition().withComparisonOperator(ComparisonOperator.EQ).withAttributeValueList(
-                new AttributeValue().withS("X00002")));
-        dynamoDBScanExpression.setScanFilter(filter);
-        int x00002 = getMapper().count(XiaohaoTemplate.class,dynamoDBScanExpression);
-        System.out.println("X00002="+x00002);
-
-        filter.clear();
-        filter.put("plat_code",new Condition().withComparisonOperator(ComparisonOperator.EQ).withAttributeValueList(
-                new AttributeValue().withS("J00001")));
-        dynamoDBScanExpression.setScanFilter(filter);
-        int j00001 = getMapper().count(XiaohaoTemplate.class,dynamoDBScanExpression);
-        System.out.println("J00001="+j00001);
-
-        filter.clear();
-        filter.put("plat_code",new Condition().withComparisonOperator(ComparisonOperator.EQ).withAttributeValueList(
-                new AttributeValue().withS("J00002")));
-        dynamoDBScanExpression.setScanFilter(filter);
-        int j00002 = getMapper().count(XiaohaoTemplate.class,dynamoDBScanExpression);
-        System.out.println("J00002="+j00002);
-
-        filter.clear();
-        filter.put("plat_code",new Condition().withComparisonOperator(ComparisonOperator.EQ).withAttributeValueList(
-                new AttributeValue().withS("J00003")));
-        dynamoDBScanExpression.setScanFilter(filter);
-        int j00003 = getMapper().count(XiaohaoTemplate.class,dynamoDBScanExpression);
-        System.out.println("J00003="+j00003);
-
-        System.out.println(j00001 + j00002 + j00003 + x00001 + x00002);
+        log.info("name = {}, plat_code = {} , count = {}",nameCode.getName(), nameCode.getCode(), count);
+        return count;
     }
 }

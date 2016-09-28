@@ -39,13 +39,13 @@ public class Site implements Serializable{
      */
     private List<Request> startRequests = new ArrayList<Request>();
 
-    private int sleepTime = 1000;
+    private int sleepTime = 100;
 
     private int retryTimes = 0;
 
     private int cycleRetryTimes = 0;
 
-    private int retrySleepTime = 1000;
+    private int retrySleepTime = 100;
 
     private int timeOut = 5000;
 
@@ -541,4 +541,21 @@ public class Site implements Serializable{
         return this;
     }
 
+    /**
+     * 获取限流的key,这里可以根据不同网站和不同ip来选择
+     * @return
+     */
+    public String getRateLimitKey(){
+        StringBuilder key = new StringBuilder("RateLimitKey:");
+        if (getDomain() != null){
+            key.append(domain);
+        }
+        if (getHttpHost() != null){
+            key.append(getHttpHost().getHostName());
+        }
+        if (getHttpProxy() != null){
+            key.append(getHttpProxy().getIp());
+        }
+        return key.toString();
+    }
 }

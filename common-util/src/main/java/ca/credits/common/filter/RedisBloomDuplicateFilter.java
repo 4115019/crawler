@@ -5,6 +5,8 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by chenwen on 16/9/20.
  */
@@ -25,7 +27,9 @@ public class RedisBloomDuplicateFilter implements IDuplicateFilter {
         this.name = name;
         this.redisson = redisson;
         this.bloomFilter = redisson.getBloomFilter(name);
+        this.bloomFilter.expire(Long.MAX_VALUE, TimeUnit.DAYS);
         this.counter = redisson.getAtomicLong(name);
+        this.counter.expire(Long.MAX_VALUE, TimeUnit.DAYS);
         this.fpp = bloomFilter.getFalseProbability();
         this.expectedInsertions = bloomFilter.getExpectedInsertions();
     }

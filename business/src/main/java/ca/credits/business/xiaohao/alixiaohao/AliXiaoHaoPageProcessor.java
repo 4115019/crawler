@@ -5,7 +5,7 @@ import ca.credits.business.pipeline.DynamodbPipeline;
 import ca.credits.business.xiaohao.XiaohaoTemplate;
 import ca.credits.common.config.Config;
 import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbimqScheduler;
+import ca.credits.deep.scheduler.RabbitmqScheduler;
 import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.EventController;
 import ca.credits.queue.ExchangeEnum;
@@ -14,7 +14,6 @@ import ca.credits.queue.impl.DefaultEventController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.util.concurrent.RateLimiter;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -41,7 +40,7 @@ public class AliXiaoHaoPageProcessor implements PageProcessor{
                                                 .exchangeName(PlatformCodeEnum.VirtualPhone.ALIPAY.getCode())
                                                 .exchangeType(ExchangeEnum.DIRECT).build();
         RabbitSpider rabbitSpider = RabbitSpider.create(queueInfo, new AliXiaoHaoPageProcessor(),
-                new RabbimqScheduler(eventController)).rateLimiter(RateLimiter.create(0.5)).siteGen(request -> Site.me()
+                new RabbitmqScheduler(eventController)).permitsPerSecond(0.5).siteGen(request -> Site.me()
                 .addCookie("WAPFDFDTGFG","+4cMKKP+8PI+KKw/edQO2jpaC3Wi/y3mlsu77T4opzq5SpHEXB8=")
                 .addCookie("_w_tb_nick","tao443818435")
                 .addCookie("imewweoriw","3c6yk5Ak6YQpTxF0Di5KD/7ik6Ax83h6NyNNb1EZShg=")
@@ -80,7 +79,7 @@ public class AliXiaoHaoPageProcessor implements PageProcessor{
 
         rabbitSpider.push(new Request("http://aliqin.m.tmall.com/usercenter/secret_info.do?ver=2.0&_input_charset=UTF-8&m=GetSecretNos&phone_no=18210036590&num=8&like=&callback=jsonp3"));
 
-        eventController.start();
+//        eventController.start();
     }
 
     @Override

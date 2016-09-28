@@ -6,13 +6,12 @@ import ca.credits.business.xiaohao.JiemaPlatformAbstractTemplate;
 import ca.credits.business.xiaohao.XiaohaoTemplate;
 import ca.credits.common.config.Config;
 import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbimqScheduler;
+import ca.credits.deep.scheduler.RabbitmqScheduler;
 import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.EventController;
 import ca.credits.queue.ExchangeEnum;
 import ca.credits.queue.QueueInfo;
 import ca.credits.queue.impl.DefaultEventController;
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.scheduler.PushFailedException;
@@ -44,7 +43,7 @@ public class EmaPlatformPageProcessor extends JiemaPlatformAbstractTemplate {
         QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.VirtualPhone.EMA.getCode()).exchangeName(PlatformCodeEnum.VirtualPhone.EMA.getCode()).exchangeType(ExchangeEnum.DIRECT).build();
 
         RabbitSpider rabbitSpider = RabbitSpider.create(queueInfo, new EmaPlatformPageProcessor(loginUrl, getPhoneUrl, addBlackListUrl, releasePhoneUrl, nameCode),
-                new RabbimqScheduler(eventController)).rateLimiter(RateLimiter.create(0.1))
+                new RabbitmqScheduler(eventController)).permitsPerSecond(0.1)
                 .pipelines(new DynamodbPipeline(XiaohaoTemplate.TABLE_NAME));
 
         eventController.add(queueInfo,rabbitSpider);

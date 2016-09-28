@@ -56,18 +56,22 @@ public class HttpClientDownloader extends AbstractDownloader {
         if (site == null) {
             return httpClientGenerator.getClient(null);
         }
-        String domain = site.getDomain();
-        CloseableHttpClient httpClient = httpClients.get(domain);
-        if (httpClient == null) {
-            synchronized (this) {
-                httpClient = httpClients.get(domain);
-                if (httpClient == null) {
-                    httpClient = httpClientGenerator.getClient(site);
-                    httpClients.put(domain, httpClient);
+        if ((site.getHttpProxy() != null && site.getHttpProxy().validate())) {
+            return httpClientGenerator.getClient(site);
+        }else {
+            String domain = site.getDomain();
+            CloseableHttpClient httpClient = httpClients.get(domain);
+            if (httpClient == null) {
+                synchronized (this) {
+                    httpClient = httpClients.get(domain);
+                    if (httpClient == null) {
+                        httpClient = httpClientGenerator.getClient(site);
+                        httpClients.put(domain, httpClient);
+                    }
                 }
             }
+            return httpClient;
         }
-        return httpClient;
     }
 
     @Override
@@ -77,15 +81,9 @@ public class HttpClientDownloader extends AbstractDownloader {
 
     public Page download(Request request, Site site) {
         Set<Integer> acceptStatCode;
-        String charset = null;
-        Map<String, String> headers = null;
-        if (site != null) {
-            acceptStatCode = site.getAcceptStatCode();
-            charset = site.getCharset();
-            headers = site.getHeaders();
-        } else {
-            acceptStatCode = Sets.newHashSet(200);
-        }
+        String charset = site.getCharset();
+        Map<String, String> headers = site.getHeaders();
+        acceptStatCode = site.getAcceptStatCode();
         logger.info("downloading page {}", request.getUrl());
         CloseableHttpResponse httpResponse = null;
         int statusCode=0;

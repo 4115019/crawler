@@ -1,29 +1,28 @@
 package ca.credits.business.p2b.jiedaip2p;
 
 import ca.credits.business.enums.PlatformCodeEnum;
+import ca.credits.business.p2b.P2bBootstrap;
 import ca.credits.business.p2b.P2bTemplate;
 import ca.credits.business.pipeline.DynamodbPipeline;
 import ca.credits.common.config.Config;
 import ca.credits.deep.ISiteGen;
 import ca.credits.deep.RabbitSpider;
-import ca.credits.deep.scheduler.RabbimqDuplicateScheduler;
-import ca.credits.deep.scheduler.RabbimqScheduler;
+import ca.credits.deep.scheduler.RabbitmqDuplicateScheduler;
 import ca.credits.queue.EventControlConfig;
 import ca.credits.queue.EventController;
 import ca.credits.queue.ExchangeEnum;
 import ca.credits.queue.QueueInfo;
 import ca.credits.queue.impl.DefaultEventController;
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.formatter.DateFormatter;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.scheduler.PushFailedException;
 import us.codecraft.webmagic.scheduler.component.HashSetDuplicateRemover;
 import us.codecraft.webmagic.selector.Selectable;
+import us.codecraft.webmagic.utils.HttpProxyUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +34,7 @@ import java.util.List;
  */
 @Slf4j
 public class JieDaiP2PPageProcessor implements PageProcessor {
-    private Site site = Site.me().setRetryTimes(3).setSleepTime(1000);
+    private Site site = Site.me().setRetryTimes(3).setSleepTime(100);
 
     @Override
     public void process(Page page) throws ParseException {
@@ -89,25 +88,16 @@ public class JieDaiP2PPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) throws PushFailedException {
-        JieDaiP2PPageProcessor jieDaiP2PPageProcessor = new JieDaiP2PPageProcessor();
-
-        EventControlConfig config = new EventControlConfig(Config.getString("rabbitmq.host"));
-        config.setUsername(Config.getString("rabbitmq.username"));
-        config.setPassword(Config.getString("rabbitmq.password"));
-        config.setVirtualHost(Config.getString("rabbitmq.virtual.host"));
-
-        EventController eventController = DefaultEventController.getInstance(config);
-        QueueInfo queueInfo = QueueInfo.builder().queueName(PlatformCodeEnum.P2B.JIEDAIP2P.getCode())
-                                                .exchangeName(PlatformCodeEnum.P2B.JIEDAIP2P.getCode())
-                                                .exchangeType(ExchangeEnum.DIRECT).build();
-        RabbitSpider rabbitSpider = RabbitSpider.create(queueInfo, new JieDaiP2PPageProcessor(),
-                new RabbimqDuplicateScheduler(eventController).setDuplicateRemover(new HashSetDuplicateRemover())).rateLimiter(RateLimiter.create(0.5)).siteGen(request -> Site.me().setRetryTimes(3).setSleepTime(1000).setCharset("gb2312")
-                .addHeader("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3")
-                .addHeader("Accept-Encoding", "gzip, deflate")
-                .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"))
-                .pipelines(new DynamodbPipeline(P2bTemplate.TABLE_NAME));
-        eventController.add(queueInfo, rabbitSpider);
-        rabbitSpider.push(new Request("http://www.p2p12580.com/blacklist.asp?id=0"));
-        eventController.start();
+        P2bBootstrap.start(
+                PlatformCodeEnum.P2B.JIEDAIP2P
+                , new JieDaiP2PPageProcessor()
+                , 0.5
+                , request -> Site.me().setRetryTimes(3).setSleepTime(100).setCharset("gb2312")
+                        .addHeader("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3")
+                        .addHeader("Accept-Encoding", "gzip, deflate")
+                        .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                        .addHeader("Content-Type","text/html; charset=gb2312")
+                        .httpProxy(HttpProxyUtil.getHttpProxy())
+                , new Request("http://www.p2p12580.com/blacklist.asp?id=0"));
     }
 }

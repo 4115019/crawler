@@ -32,7 +32,6 @@ public abstract class DuplicateRemovedScheduler implements Scheduler {
     public void push(Request request, Task task) throws PushFailedException {
         logger.trace("get a candidate url {}", request.getUrl());
         if (!duplicatedRemover.isDuplicate(request, task)) {
-
             logger.debug("push to queue {}", request.getUrl());
             pushWhenNoDuplicate(request, task);
         }
