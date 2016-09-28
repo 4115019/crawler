@@ -1,38 +1,20 @@
 package ca.credits.common.filter;
 
-import org.redisson.Redisson;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by chenwen on 16/9/20.
  */
 public class RedisBloomDuplicateFilter implements IDuplicateFilter {
-    private final RBloomFilter<CharSequence> bloomFilter;
-
     private long expectedInsertions;
 
     private double fpp;
 
-    private RAtomicLong counter;
-
     private RedissonClient redisson;
 
     private String name;
-
-    public RedisBloomDuplicateFilter(String name, Redisson redisson){
-        this.name = name;
-        this.redisson = redisson;
-        this.bloomFilter = redisson.getBloomFilter(name);
-        this.bloomFilter.expire(Long.MAX_VALUE, TimeUnit.DAYS);
-        this.counter = redisson.getAtomicLong(name);
-        this.counter.expire(Long.MAX_VALUE, TimeUnit.DAYS);
-        this.fpp = bloomFilter.getFalseProbability();
-        this.expectedInsertions = bloomFilter.getExpectedInsertions();
-    }
 
     public RedisBloomDuplicateFilter(int expectedInsertions, String name, RedissonClient redisson){
         this(expectedInsertions, 0.01, name, redisson);
@@ -43,45 +25,38 @@ public class RedisBloomDuplicateFilter implements IDuplicateFilter {
         this.fpp = fpp;
         this.name = name;
         this.redisson = redisson;
-
-        RBloomFilter<CharSequence> bloomFilter = redisson.getBloomFilter(name);
-        if (bloomFilter.isExists()){
-            this.bloomFilter = bloomFilter;
-        }else {
-            this.bloomFilter = rebuildBloomFilter();
-        }
+        rebuildBloomFilter();
     }
 
-    protected RBloomFilter<CharSequence> rebuildBloomFilter() {
-        counter = redisson.getAtomicLong(name);
-        counter.set(0);
-
-        RBloomFilter<CharSequence> bloomFilter = redisson.getBloomFilter(name);
-        if (bloomFilter.isExists()){
-            bloomFilter.delete();
-            bloomFilter = redisson.getBloomFilter(name);
-        }
-        bloomFilter.tryInit(expectedInsertions,fpp);
-        return bloomFilter;
+    protected void rebuildBloomFilter() {
+        getRBloomFilter().tryInit(expectedInsertions,fpp);
     }
 
     @Override
     public boolean isDuplicate(String key) {
-        boolean isDuplicate = bloomFilter.contains(key);
+        boolean isDuplicate = getRBloomFilter().contains(key);
         if (!isDuplicate) {
-            bloomFilter.add(key);
-            counter.incrementAndGet();
+            getRBloomFilter().add(key);
+            getRAtomicLong().incrementAndGet();
         }
         return isDuplicate;
     }
 
     @Override
     public long size() {
-        return counter.get();
+        return getRAtomicLong().get();
     }
 
     @Override
     public void reset() {
         rebuildBloomFilter();
+    }
+
+    private RBloomFilter<CharSequence> getRBloomFilter(){
+        return redisson.getBloomFilter(name);
+    }
+
+    private RAtomicLong getRAtomicLong(){
+        return redisson.getAtomicLong(name);
     }
 }
